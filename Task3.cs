@@ -34,4 +34,14 @@
 
         Console.ReadKey();
     }
+
+    static void Task3_4()
+    {
+        enum Semaphore : int
+        {
+            Red = 100,
+            Yellow = 200,
+            Green = 300
+        }
+    }
 }

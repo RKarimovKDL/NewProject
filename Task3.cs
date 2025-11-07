@@ -1,8 +1,18 @@
-﻿internal class Task3
+﻿
+internal partial class Tasks
 {
+    enum Semaphore : int
+    {
+        Red = 100,
+        Yellow = 200,
+        Green = 300
+    }
+
     static void Main(string[] args)
     {
-        Task3_3();
+        //Task3_3();
+        //Task3_4();
+        Task4_3();
     }
 
     static void Task3_3()
@@ -14,7 +24,7 @@
         string Age = Console.ReadLine();
 
         Console.WriteLine("Если ли у вас питомец?");
-        bool Pet = Console.ReadLine();
+        string Pet = Console.ReadLine();
 
         Console.WriteLine("Какой у вас размер ноги?");
         string FootSize = Console.ReadLine();
@@ -37,11 +47,34 @@
 
     static void Task3_4()
     {
-        enum Semaphore : int
+        Console.WriteLine("День недели");
+
+        DayOfWeek day = (DayOfWeek) int.Parse(Console.ReadLine());
+
+        Console.WriteLine("{0}",day);
+    }
+
+    static void Task4_3()
+    {
+        var arr = new int[] { 5, 6, 9, 1, 2, 3, 4 };
+        int temp;
+
+        for (int i = 0; i < arr.Length; i++)
         {
-            Red = 100,
-            Yellow = 200,
-            Green = 300
+            for (int j = i + 1; j < arr.Length; j++)
+            {
+                if (arr[i] > arr[j])
+                {
+                    temp = arr[i];
+                    arr[i] = arr[j];
+                    arr[j] = temp;
+                }
+            }
+        }
+
+        foreach (var item in arr)
+        {
+            Console.Write(item);
         }
     }
 }

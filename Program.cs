@@ -1,55 +1,160 @@
 ﻿using System;
 using System.Collections.Generic;
 
-class Program
+abstract class Delivery
 {
-    static void Main(string[] args)
+    public string Address;
+
+    public Delivery(string address)
     {
-        int num1 = 7;
-        int num2 = -13;
-        int num3 = 0;
+        Address = address;
+    }
 
-        Console.WriteLine(num1.GetNegative()); //-7
-        Console.WriteLine(num1.GetPositive()); //7
-        Console.WriteLine(num2.GetNegative()); //-13
-        Console.WriteLine(num2.GetPositive()); //13
-        Console.WriteLine(num3.GetNegative()); //0
-        Console.WriteLine(num3.GetPositive()); //0
+    public abstract void ShowInfo();
+}
 
-        Console.ReadKey();
+class HomeDelivery : Delivery
+{
+    public string CourierName;
+
+    public HomeDelivery(string address, string courier)
+        : base(address)
+    {
+        CourierName = courier;
+    }
+
+    public override void ShowInfo()
+    {
+        Console.WriteLine($"Курьер: {CourierName}, адрес: {Address}");
     }
 }
 
-static class IntExtentions
+class PickPointDelivery : Delivery
 {
-    public static int GetNegative(this int source)
-    {
-        int item = 0;
-        if (source <= 0)
-        {
-            item = source;
-        }
-        else
-        {
-            item = -source;
-        }
+    public string PickPointName;
 
-        return item;
+    public PickPointDelivery(string address, string pointName)
+        : base(address)
+    {
+        PickPointName = pointName;
     }
 
-    public static int GetPositive(this int source)
+    public override void ShowInfo()
     {
-        int item = 0;
-        if (source >= 0)
-        {
-            item = source;
-        }
-        else
-        {
-            item = -source;
-        }
+        Console.WriteLine($"Пункт выдачи: {PickPointName}, адрес: {Address}");
+    }
+}
 
-        return item;
+class ShopDelivery : Delivery
+{
+    public string ShopName;
+
+    public ShopDelivery(string address, string shopName)
+        : base(address)
+    {
+        ShopName = shopName;
     }
 
+    public override void ShowInfo()
+    {
+        Console.WriteLine($"Магазин: {ShopName}, адрес: {Address}");
+    }
+}
+
+class Product
+{
+    public string Name;
+    private decimal price;
+
+    public decimal Price
+    {
+        get { return price; }
+        set
+        {
+            if (value < 0)
+                price = 0;
+            else
+                price = value;
+        }
+    }
+
+    public Product(string name, decimal price)
+    {
+        Name = name;
+        Price = price;
+    }
+}
+
+class Order<TDelivery, TStruct> where TDelivery : Delivery
+{
+    public TDelivery Delivery;
+
+    public int Number;
+
+    public string Description;
+
+    private List<Product> products = new List<Product>();
+
+    public Order(int number, TDelivery delivery, string description)
+    {
+        Number = number;
+        Delivery = delivery;
+        Description = description;
+    }
+
+    public void AddProduct(Product product)
+    {
+        products.Add(product);
+    }
+
+    public void DisplayAddress()
+    {
+        Console.WriteLine(Delivery.Address);
+    }
+
+    public void ShowOrder()
+    {
+        Console.WriteLine($"Заказ №{Number}");
+        Console.WriteLine($"Описание: {Description}");
+
+        Delivery.ShowInfo();
+
+        foreach (var p in products)
+        {
+            Console.WriteLine($"{p.Name} - {p.Price}");
+        }
+
+        Console.WriteLine($"Итого: {GetTotalPrice()}");
+    }
+
+    public decimal GetTotalPrice()
+    {
+        decimal total = 0;
+
+        foreach (var p in products)
+        {
+            total += p.Price;
+        }
+
+        return total;
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        var delivery = new HomeDelivery("Москва, Ленина 10", "Иван");
+
+        var order = new Order<HomeDelivery, int>(
+            1,
+            delivery,
+            "Покупка электроники"
+        );
+
+        order.AddProduct(new Product("Телефон", 50000));
+        order.AddProduct(new Product("Наушники", 5000));
+
+        order.ShowOrder();
+    }
 }
